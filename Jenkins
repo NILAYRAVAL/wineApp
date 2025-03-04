@@ -1,8 +1,8 @@
 pipeline {
-    agent any  // Runs on any available Jenkins agent
+    agent any // Runs on any available Jenkins agent
 
     environment {
-        MAVEN_HOME = tool 'Maven'  // Using Jenkins' Maven tool
+        MAVEN_HOME = tool 'Maven' // Using Jenkins' Maven tool
     }
 
     stages {
@@ -16,14 +16,14 @@ pipeline {
         stage('Build') {
             steps {
                 // Run Maven clean and package commands
-                bat "${MAVEN_HOME}/bin/mvn clean package"
+                bat "${MAVEN_HOME}\\bin\\mvn clean package"
             }
         }
 
         stage('Test') {
             steps {
                 // Run Maven test command
-                bat "${MAVEN_HOME}/bin/mvn test"
+                bat "${MAVEN_HOME}\\bin\\mvn test"
             }
         }
 
@@ -37,12 +37,11 @@ pipeline {
 
     post {
         success {
-            // Actions to take  if the pipeline completes successfully
+            // Actions to take if the pipeline completes successfully
             echo "Pipeline completed successfully!"
         }
         failure {
-            // Actions to  take if the pipeline fails
-            // asfdfsdfs
+            // Actions to take if the pipeline fails
             echo "Pipeline failed!"
         }
     }
