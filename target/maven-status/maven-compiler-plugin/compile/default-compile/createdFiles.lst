@@ -1,0 +1,10 @@
+edu\tus\winemanager\controllers\WineService.class
+edu\tus\winemanager\dao\WineRepository.class
+edu\tus\winemanager\validation\WineValidator.class
+edu\tus\winemanager\dto\Wine.class
+edu\tus\winemanager\validation\ErrorMessages.class
+edu\tus\winemanager\validation\ErrorMessage.class
+edu\tus\winemanager\WineManagerApp.class
+edu\tus\winemanager\exception\WineException.class
+edu\tus\winemanager\exception\WineNotFoundException.class
+edu\tus\winemanager\exception\WineValidationException.class
