@@ -1,47 +1,35 @@
 pipeline {
-    agent any // Runs on any available Jenkins agent
-
-    environment {
-        MAVEN_HOME = tool 'Maven' // Using Jenkins' Maven tool
+    agent any
+    tools {
+        maven 'Maven' // Use the Maven tool installed in Jenkins
     }
-
     stages {
         stage('Checkout Code') {
             steps {
-                // Checkout the code from the 'main' branch of the GitHub repository
                 git branch: 'main', url: 'https://github.com/NILAYRAVAL/wineApp.git'
             }
         }
-
         stage('Build') {
             steps {
-                // Run Maven clean and package commands
-                bat "${MAVEN_HOME}\\bin\\mvn clean package"
+                bat 'mvn clean package' // Use 'bat' for Windows
             }
         }
-
         stage('Test') {
             steps {
-                // Run Maven test command
-                bat "${MAVEN_HOME}\\bin\\mvn test"
+                bat 'mvn test' // Use 'bat' for Windows
             }
         }
-
         stage('Deploy') {
             steps {
-                // Deploying the application (replace with actual deployment commands)
-                echo "Deploying the application..."
+                echo "Deploying the Java application..."
             }
         }
     }
-
     post {
         success {
-            // Actions to take if the pipeline completes successfully
             echo "Pipeline completed successfully!"
         }
         failure {
-            // Actions to take if the pipeline fails
             echo "Pipeline failed!"
         }
     }
