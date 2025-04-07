@@ -38,8 +38,6 @@ pipeline {
                         -Dsonar.projectKey=wine-manager-uniqueKey \
                         -Dsonar.projectName=WineApp \
                         -Dsonar.java.binaries=target/classes \
-                        -Dsonar.tests=src/test/java \
-                        -Dsonar.test.inclusions=**/*Test.java \
                     '''
                 }
             }
