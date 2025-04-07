@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'maven' // Use the Maven tool installed in Jenkins
+        maven 'maven' // Use the Maven tool installed in Jenkins.
     }
     environment {
         SONARQUBE_ENV = 'sonarqube' // Jenkins configured name
