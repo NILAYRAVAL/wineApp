@@ -4,7 +4,7 @@ pipeline {
         maven 'maven' // Use the Maven tool installed in Jenkins
     }
     environment {
-        SONARQUBE_ENV = 'Sonarqube' // Jenkins configured name
+        SONARQUBE_ENV = 'sonarqube' // Jenkins configured name
     }
     stages {
         stage('Checkout Code') {
