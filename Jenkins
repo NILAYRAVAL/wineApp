@@ -4,8 +4,8 @@ pipeline {
         maven 'maven'
     }
     environment {
-        IMAGE_NAME = "nilaykumar416/wineapp:latest"  // Docker Hub repository and image tag
-        DOCKER_CREDENTIALS_ID = "dockerhub"  // Jenkins credentials ID for Docker Hub login
+        SONARQUBE_ENV = 'sonarqube'
+        DOCKER_IMAGE = 'wineapp-image'
     }
     stages {
         stage('Checkout Code') {
@@ -35,30 +35,21 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+        stage('Docker Build & Run') {
             steps {
-                // Build Docker image
-                sh 'docker build -t $IMAGE_NAME .'
-            }
-        }
-        stage('Push to Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    // Log in to Docker Hub and push the image
-                    sh '''
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push $IMAGE_NAME
-                    '''
-                }
+                sh '''
+                    docker build -t $DOCKER_IMAGE .
+                    docker run -d -p 8081:8080 --name wineapp-container $DOCKER_IMAGE
+                '''
             }
         }
     }
     post {
         success {
-            echo "✅ Docker image pushed successfully to Docker Hub!"
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo "❌ Something went wrong during the pipeline!"
+            echo 'Pipeline failed!'
         }
     }
 }
