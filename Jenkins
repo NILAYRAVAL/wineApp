@@ -25,7 +25,12 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=wineApp -Dsonar.projectName=WineApp'
+                    sh '''
+                        mvn sonar:sonar \
+                          -Dsonar.projectKey=wineApp \
+                          -Dsonar.projectName=WineApp \
+                          -Dsonar.java.binaries=target/classes
+                    '''
                 }
             }
         }
