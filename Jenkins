@@ -1,29 +1,35 @@
 pipeline {
     agent any
+
+    environment {
+        SONARQUBE_ENV = 'sonarqube'                      // Name of SonarQube server in Jenkins config
+        IMAGE_NAME = 'nilaykumar416/wineapp'   // Replace with your Docker Hub repo
+        DOCKER_CREDENTIALS_ID = 'dockerhub'              // Jenkins credential ID
+    }
+
     tools {
         maven 'maven'
     }
-    environment {
-        SONARQUBE_ENV = 'sonarqube'
-        IMAGE_NAME = "wineapp-image:latest"  // Set to your image name and tag
-        DOCKER_CREDENTIALS_ID = "dockerhub"  // Jenkins credentials ID for Docker Hub login
-    }
+
     stages {
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/NILAYRAVAL/wineApp.git'
             }
         }
+
         stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
+
         stage('Test') {
             steps {
                 sh 'mvn test'
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
@@ -31,21 +37,21 @@ pipeline {
                         mvn sonar:sonar \
                         -Dsonar.projectKey=wine-manager-uniqueKey \
                         -Dsonar.projectName=WineApp \
-                        -Dsonar.java.binaries=target/classes
+                        -Dsonar.java.binaries=target/classes \
                     '''
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                // Build Docker image
                 sh 'docker build -t $IMAGE_NAME .'
             }
         }
+
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    // Log in to Docker Hub and push the image
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker push $IMAGE_NAME
@@ -53,21 +59,20 @@ pipeline {
                 }
             }
         }
-        stage('Docker Build & Run') {
+
+        stage('Deploy') {
             steps {
-                // Build and run Docker container
-                sh '''
-                    docker run -d -p 8081:8080 --name wineapp-container $IMAGE_NAME
-                '''
+                echo "Deployment steps go here."
             }
         }
     }
+
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo "Pipeline completed successfully!"
         }
         failure {
-            echo 'Pipeline failed!'
+            echo "Pipeline failed!"
         }
     }
 }
