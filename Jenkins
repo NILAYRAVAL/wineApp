@@ -3,6 +3,9 @@ pipeline {
     tools {
         maven 'maven' // Use the Maven tool installed in Jenkins
     }
+    environment {
+        SONARQUBE_ENV = 'Sonarqube' // Jenkins configured name
+    }
     stages {
         stage('Checkout Code') {
             steps {
@@ -11,12 +14,19 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn clean package' // Use 'bat' for Windows
+                sh 'mvn clean package'
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn test' // Use 'bat' for Windows
+                sh 'mvn test'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=wineApp -Dsonar.host.url=http://3.84.165.165:9000 -Dsonar.login=sqa_f3359f9e8c782ed9c8bdc28f1082c82ffad3d1cb'
+                }
             }
         }
         stage('Deploy') {
