@@ -6,7 +6,7 @@ pipeline {
     environment {
         SONARQUBE_ENV = 'sonarqube'
         IMAGE_NAME = "wineapp-image:latest"  // Set to your image name and tag
-        DOCKER_CREDENTIALS_ID = "dockerhub"  // Jenkins credentials ID for Docker Hub login
+        DOCKER_CREDENTIALS_ID = "dockerhub"  // Jenkins credentials ID for Docker Hub login.
         SONARQUBE_URL = "http://3.84.165.165:9000"    
         SONARQUBE_TOKEN = "sqa_f3359f9e8c782ed9c8bdc28f1082c82ffad3d1cb"
 }
