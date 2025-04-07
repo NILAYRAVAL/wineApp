@@ -1,4 +1,4 @@
-# Use a lightweight Java image
+# Use a lightweight Java image.
 FROM openjdk:17-jdk-slim
 
 # Set working directory inside container
