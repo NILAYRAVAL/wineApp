@@ -1,7 +1,7 @@
 # Use a lightweight Java image.
 FROM openjdk:17-jdk-slim
 
-# Set working directory inside container
+# Set working directory inside container.
 WORKDIR /app
 
 # Copy the JAR file (you'll build this in Jenkins)
