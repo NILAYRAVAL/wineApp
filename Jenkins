@@ -1,57 +1,80 @@
 pipeline {
     agent any
+
+    environment {
+        SONARQUBE_ENV = 'sonarqube'                      // Name of SonarQube server in Jenkins config
+        IMAGE_NAME = 'your-dockerhub-username/wineapp'   // Replace with your Docker Hub repo
+        DOCKER_CREDENTIALS_ID = 'dockerhub'              // Jenkins credential ID
+    }
+
     tools {
         maven 'maven'
     }
-    environment {
-        SONARQUBE_ENV = 'sonarqube'
-        IMAGE_NAME = "wineapp-image:latest"  // Set to your image name and tag
-        DOCKER_CREDENTIALS_ID = "dockerhub"  // Jenkins credentials ID for Docker Hub login.
-        SONARQUBE_URL = "http://3.84.165.165:9000"    
-        SONARQUBE_TOKEN = "sqa_f3359f9e8c782ed9c8bdc28f1082c82ffad3d1cb"
-}
+
     stages {
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/NILAYRAVAL/wineApp.git'
             }
         }
+
         stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
+
         stage('Test') {
             steps {
                 sh 'mvn test'
             }
         }
-        stage('Code Analysis with SonarQube') {
+
+        stage('SonarQube Analysis') {
             steps {
-                script {
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
                     sh '''
-                        mvn clean verify sonar:sonar \
-                          -Dsonar.projectKey=wine-manager-uniqueKey \
-                          -Dsonar.host.url=${SONARQUBE_URL} \
-                          -Dsonar.login=${SONARQUBE_TOKEN} \
-                          -Dsonar.java.binaries=target/classes
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=wine-manager-uniqueKey \
+                        -Dsonar.projectName=WineApp \
+                        -Dsonar.java.binaries=target/classes \
+                        -Dsonar.tests=src/test/java \
+                        -Dsonar.test.inclusions=**/*Test.java \
                     '''
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                // Build Docker image
                 sh 'docker build -t $IMAGE_NAME .'
             }
         }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'nilaykumar416', passwordVariable: 'dckr_pat_LQSlortYPp6n5vpjxTA7aXMkg5w')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u nilaykumar416 --password-stdin
+                        docker push $IMAGE_NAME
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deployment steps go here."
+            }
+        }
     }
+
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo "Pipeline completed successfully!"
         }
         failure {
-            echo 'Pipeline failed!'
+            echo "Pipeline failed!"
         }
     }
 }
