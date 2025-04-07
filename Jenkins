@@ -27,9 +27,9 @@ pipeline {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
                     sh '''
                         mvn sonar:sonar \
-                          -Dsonar.projectKey=wineApp \
-                          -Dsonar.projectName=WineApp \
-                          -Dsonar.java.binaries=target/classes
+                        -Dsonar.projectKey=wine-manager-uniqueKey \
+                        -Dsonar.projectName=WineApp \
+                        -Dsonar.java.binaries=target/classes
                     '''
                 }
             }
