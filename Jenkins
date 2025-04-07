@@ -29,6 +29,11 @@ pipeline {
                 sh 'mvn test'
             }
         }
+        stage('Code Coverage with JaCoCo') {
+             steps {
+                sh 'mvn clean test jacoco:report'
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
@@ -38,6 +43,7 @@ pipeline {
                         -Dsonar.projectKey=wine-manager-uniqueKey \
                         -Dsonar.projectName=WineApp \
                         -Dsonar.java.binaries=target/classes \
+                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                     '''
                 }
             }
