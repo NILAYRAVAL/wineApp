@@ -1,10 +1,11 @@
 pipeline {
     agent any
     tools {
-        maven 'maven' // Use the Maven tool installed in Jenkins.
+        maven 'maven'
     }
     environment {
-        SONARQUBE_ENV = 'sonarqube' // Jenkins configured name
+        SONARQUBE_ENV = 'sonarqube'
+        DOCKER_IMAGE = 'wineapp-image'
     }
     stages {
         stage('Checkout Code') {
@@ -34,18 +35,21 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Docker Build & Run') {
             steps {
-                echo "Deploying the Java application..."
+                sh '''
+                    docker build -t $DOCKER_IMAGE .
+                    docker run -d -p 8081:8080 --name wineapp-container $DOCKER_IMAGE
+                '''
             }
         }
     }
     post {
         success {
-            echo "Pipeline completed successfully!"
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo "Pipeline failed!"
+            echo 'Pipeline failed!'
         }
     }
 }
