@@ -29,11 +29,6 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('Code Coverage with JaCoCo') {
-             steps {
-                sh 'mvn clean test jacoco:report'
-            }
-        }
 
         stage('SonarQube Analysis') {
             steps {
