@@ -29,7 +29,7 @@ pipeline {
                         mvn sonar:sonar \
                         -Dsonar.projectKey=wine-manager-uniqueKey \
                         -Dsonar.projectName=WineApp \
-                        -Dsonar.java.binaries=target\test-classes\edu\tus\winemanager
+                        -Dsonar.java.binaries=target/classes
                     '''
                 }
             }
